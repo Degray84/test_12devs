@@ -1,0 +1,23 @@
+{
+  "name": "test_12devs",
+  "version": "1.0.0",
+  "description": "test backend service for 12devs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Degray84/test_12devs.git"
+  },
+  "keywords": [
+    "test",
+    "nodejs"
+  ],
+  "author": "skarmind",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Degray84/test_12devs/issues"
+  },
+  "homepage": "https://github.com/Degray84/test_12devs#readme"
+}
