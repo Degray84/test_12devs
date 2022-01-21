@@ -4,7 +4,7 @@
   "description": "test backend service for 12devs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "nodemon": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,14 @@
   "bugs": {
     "url": "https://github.com/Degray84/test_12devs/issues"
   },
-  "homepage": "https://github.com/Degray84/test_12devs#readme"
+  "homepage": "https://github.com/Degray84/test_12devs#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^14.2.0",
+    "express": "^4.17.2",
+    "morgan": "^1.10.0"
+  }
 }
