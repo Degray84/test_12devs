@@ -1,18 +1,18 @@
 const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
-// const connectDB = require('./config/db.js')
+const connectDB = require("./config/db.js");
 
 // configs
 require("colors");
 require("dotenv").config();
 
 //connection to database
-// connectDB()
 
 // Routers
 
 const invoices = require("./routers/invoices.js");
+const clients = require("./routers/clients.js");
 
 const PORT = process.env.PORT || 5000;
 
@@ -30,6 +30,7 @@ app.use(morgan("dev"));
 // use Routers
 
 app.use("/api/invoices", invoices);
+app.use("/api/clients", clients);
 
 app.use(function (err, req, res, next) {
   res.status(500).send({
@@ -38,7 +39,16 @@ app.use(function (err, req, res, next) {
     data: null,
   });
 });
-
-app.listen(PORT, () => {
-  console.log("Сервер запущен в окружении ".cyan + process.env.NODE_ENV.magenta + " на порту ".cyan + PORT.magenta + " ...".cyan);
-});
+async function start() {
+  connectDB
+    .sync()
+    .then((db) => {
+      app.listen(PORT, () => {
+        console.log("Сервер запущен в окружении ".cyan + process.env.NODE_ENV.magenta + " на порту ".cyan + PORT.magenta + " ...".cyan);
+      });
+    })
+    .catch((err) => {
+      console.error("Unable to connect to the database:", error);
+    });
+}
+start();
