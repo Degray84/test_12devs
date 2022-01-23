@@ -13,6 +13,7 @@ require("dotenv").config();
 
 const invoices = require("./routers/invoices.js");
 const clients = require("./routers/clients.js");
+const logs = require("./routers/logs.js");
 
 const PORT = process.env.PORT || 5000;
 
@@ -31,6 +32,7 @@ app.use(morgan("dev"));
 
 app.use("/api/invoices", invoices);
 app.use("/api/clients", clients);
+app.use("/api/logs", logs);
 
 app.use(function (err, req, res, next) {
   res.status(500).send({

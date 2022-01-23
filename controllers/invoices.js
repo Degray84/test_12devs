@@ -1,5 +1,6 @@
 const Client = require("../models/Client");
 const Invoice = require("../models/Invoice");
+const Log = require("../models/Log");
 
 exports.getInvoices = async function (req, res, next) {
   try {
@@ -33,11 +34,13 @@ exports.setInvoice = async function (req, res, next) {
       body: req.body.invoice,
       ClientId: client.id,
     });
+    await Log.create({ type: "SET_INVOICE", table: "INVOICES", status: true, message: "Invoice is created", body: JSON.stringify(req.body) });
     res.status(201).json({
       success: true,
       data: newInvoice,
     });
   } catch (error) {
+    await Log.create({ type: "SET_INVOICE", table: "INVOICES", status: false, message: error.message, body: JSON.stringify(req.body) });
     next(error);
   }
 };
@@ -47,11 +50,13 @@ exports.updateInvoice = async function (req, res, next) {
     const invoice = await Invoice.findByPk(req.params.id, { include: Client });
     await invoice.update(req.body);
     await invoice.save();
+    await Log.create({ type: "UPDATE_INVOICE", table: "INVOICES", status: true, message: "Invoice is updated", body: JSON.stringify(req.body) });
     res.status(200).json({
       success: true,
       data: invoice,
     });
   } catch (error) {
+    await Log.create({ type: "UPDATE_INVOICE", table: "INVOICES", status: false, message: error.message, body: JSON.stringify(req.body) });
     next(error);
   }
 };
@@ -60,11 +65,13 @@ exports.removeInvoice = async function (req, res, next) {
     const invoice = await Invoice.findByPk(req.params.id);
     await invoice.destroy();
     await invoice.save();
+    await Log.create({ type: "REMOVE_INVOICE", table: "INVOICES", status: true, message: "Invoice is deleted" });
     res.status(200).json({
       success: true,
       data: invoice,
     });
   } catch (error) {
+    await Log.create({ type: "REMOVE_INVOICE", table: "INVOICES", status: false, message: error.message });
     next(error);
   }
 };
