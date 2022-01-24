@@ -1,6 +1,7 @@
 const Client = require("../models/Client");
 const Invoice = require("../models/Invoice");
 const Log = require("../models/Log");
+const createPDF = require("../utils/html2pdf");
 
 exports.getInvoices = async function (req, res, next) {
   try {
@@ -17,6 +18,8 @@ exports.getInvoices = async function (req, res, next) {
 exports.getInvoice = async function (req, res, next) {
   try {
     const invoice = await Invoice.findByPk(req.params.id, { include: Client });
+    const pdfBuffer = await createPDF(invoice);
+    console.log(pdfBuffer);
     res.status(200).json({
       success: true,
       data: invoice,
@@ -29,11 +32,13 @@ exports.getInvoice = async function (req, res, next) {
 exports.setInvoice = async function (req, res, next) {
   try {
     const client = await Client.findOne({ where: { email: req.body.email } });
-
-    const newInvoice = await Invoice.create({
-      body: req.body.invoice,
+    const rawInvoice = {
+      ...req.body,
+      invoiceList: JSON.stringify(req.body.invoiceList),
       ClientId: client.id,
-    });
+    };
+    const newInvoice = await Invoice.create(rawInvoice);
+    console.log(newInvoice);
     await Log.create({ type: "SET_INVOICE", table: "INVOICES", status: true, message: "Invoice is created", body: JSON.stringify(req.body) });
     res.status(201).json({
       success: true,

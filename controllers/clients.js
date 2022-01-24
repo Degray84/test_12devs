@@ -1,6 +1,8 @@
 const Client = require("../models/Client");
 const Invoice = require("../models/Invoice");
 const Log = require("../models/Log");
+const clientsArray = require("../config/clients.json");
+
 
 exports.getClients = async function (req, res, next) {
   try {
@@ -16,6 +18,8 @@ exports.getClients = async function (req, res, next) {
 
 exports.getClient = async function (req, res, next) {
   try {
+    
+
     const client = await Client.findByPk(req.params.id, { include: Invoice });
 
     res.status(200).json({
@@ -74,6 +78,23 @@ exports.removeClient = async function (req, res, next) {
     });
   } catch (error) {
     await Log.create({ type: "REMOVE_CLIENT", table: "CLIENTS", status: false, message: error.message, body: JSON.stringify(req.body) });
+    next(error);
+  }
+};
+
+exports.installClients = async function (req, res, next) {
+  try {
+    const newClients = [];
+    for (const clientFromArray of clientsArray) {
+      newClients.push(await Client.create(clientFromArray));
+    }
+    await Log.create({ type: "INSTALL_CLIENTS", table: "CLIENTS", status: true, message: "Clients from JSON isntalled" });
+    res.status(200).json({
+      success: true,
+      data: newClients,
+    });
+  } catch (error) {
+    await Log.create({ type: "INSTALL_CLIENTS", table: "CLIENTS", status: false, message: error.message });
     next(error);
   }
 };

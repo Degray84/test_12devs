@@ -8,7 +8,19 @@ const Invoice = sequelize.define("Invoice", {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
-  body: {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  currency: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  invoiceList: {
     type: DataTypes.STRING,
     allowNull: false,
   },
