@@ -1,16 +1,9 @@
+const toLocalDate = require('../toLocaleDate')
 module.exports = (data, taxesPercent = 10) => {
   const invoiceList = JSON.parse(data.invoiceList);
   const invoiceSubtotal = invoiceList.reduce((acc, cur) => acc + cur.price, 0);
   const invoiceTaxes = (invoiceSubtotal / 100) * taxesPercent;
   const invoiceTotal = invoiceSubtotal + invoiceTaxes;
-  const toLocalDate = (date, month = "short") => {
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month,
-      day: "2-digit",
-    });
-  };
-  console.log(toLocalDate(data.createdAt));
   return `
       <body style="height: 100%; margin: 0; padding: 0; display: flex; flex-direction: column; font-family:Arial, Helvetica, sans-serif">
         <header style="position: relative; display: flex; flex-grow: 0; align-items: center; justify-content: center; width: 100%; height: 150px; background-color: slategray;">

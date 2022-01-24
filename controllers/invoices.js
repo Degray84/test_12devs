@@ -2,6 +2,7 @@ const Client = require("../models/Client");
 const Invoice = require("../models/Invoice");
 const Log = require("../models/Log");
 const createPDF = require("../utils/html2pdf");
+const sendEmail = require("../utils/nodemailer");
 
 exports.getInvoices = async function (req, res, next) {
   try {
@@ -19,6 +20,7 @@ exports.getInvoice = async function (req, res, next) {
   try {
     const invoice = await Invoice.findByPk(req.params.id, { include: Client });
     const pdfBuffer = await createPDF(invoice);
+    const emailInfo = await sendEmail(pdfBuffer, invoice.createdAt);
     console.log(pdfBuffer);
     res.status(200).json({
       success: true,
