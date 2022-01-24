@@ -41,6 +41,7 @@ app.use(function (err, req, res, next) {
     data: null,
   });
 });
+
 async function start() {
   connectDB
     .sync()
