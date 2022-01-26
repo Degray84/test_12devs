@@ -3,7 +3,6 @@ const Invoice = require("../models/Invoice");
 const Log = require("../models/Log");
 const clientsArray = require("../config/clients.json");
 
-
 exports.getClients = async function (req, res, next) {
   try {
     const clients = await Client.findAll();
@@ -18,8 +17,6 @@ exports.getClients = async function (req, res, next) {
 
 exports.getClient = async function (req, res, next) {
   try {
-    
-
     const client = await Client.findByPk(req.params.id, { include: Invoice });
 
     res.status(200).json({

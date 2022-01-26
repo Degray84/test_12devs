@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const connectDB = require("./config/db.js");
+const { initBullMQ } = require("./utils/bullMQ");
 
 // configs
 require("colors");
@@ -33,6 +34,9 @@ app.use(morgan("dev"));
 app.use("/api/invoices", invoices);
 app.use("/api/clients", clients);
 app.use("/api/logs", logs);
+
+const serverAdapter = initBullMQ();
+app.use("/admin/queues", serverAdapter.getRouter());
 
 app.use(function (err, req, res, next) {
   res.status(500).send({

@@ -1,8 +1,11 @@
 const Client = require("../models/Client");
 const Invoice = require("../models/Invoice");
 const Log = require("../models/Log");
+const { invoiceQueue } = require("../utils/bullMQ");
+const { Worker } = require("bullmq");
 const createPDF = require("../utils/html2pdf");
 const sendEmail = require("../utils/nodemailer");
+const connection = require("../config/connection.conf.json");
 
 exports.getInvoices = async function (req, res, next) {
   try {
@@ -19,9 +22,7 @@ exports.getInvoices = async function (req, res, next) {
 exports.getInvoice = async function (req, res, next) {
   try {
     const invoice = await Invoice.findByPk(req.params.id, { include: Client });
-    const pdfBuffer = await createPDF(invoice);
-    const emailInfo = await sendEmail(pdfBuffer, invoice.createdAt);
-    console.log(pdfBuffer);
+
     res.status(200).json({
       success: true,
       data: invoice,
@@ -33,18 +34,32 @@ exports.getInvoice = async function (req, res, next) {
 
 exports.setInvoice = async function (req, res, next) {
   try {
-    const client = await Client.findOne({ where: { email: req.body.email } });
-    const rawInvoice = {
-      ...req.body,
-      invoiceList: JSON.stringify(req.body.invoiceList),
-      ClientId: client.id,
-    };
-    const newInvoice = await Invoice.create(rawInvoice);
-    console.log(newInvoice);
-    await Log.create({ type: "SET_INVOICE", table: "INVOICES", status: true, message: "Invoice is created", body: JSON.stringify(req.body) });
-    res.status(201).json({
-      success: true,
-      data: newInvoice,
+    const pdfWorker = new Worker(
+      "invoiceQueue",
+      async (job) => {
+        if (job.name === "createInvoice") {
+          const client = await Client.findOne({ where: { email: job.data.email } });
+          const rawInvoice = {
+            ...job.data,
+            invoiceList: JSON.stringify(job.data.invoiceList),
+            ClientId: client.id,
+          };
+          const createdInvoice = await Invoice.create(rawInvoice);
+          const newInvoice = await Invoice.findByPk(createdInvoice.id, { include: Client });
+          const pdfBuffer = await createPDF(newInvoice);
+          await sendEmail(pdfBuffer);
+          return newInvoice;
+        }
+      },
+      { connection }
+    );
+    await invoiceQueue.add("createInvoice", req.body);
+    pdfWorker.on("completed", async (job, returnvalue) => {
+      await Log.create({ type: "SET_INVOICE", table: "INVOICES", status: true, message: "Invoice is created", body: JSON.stringify(req.body) });
+      res.status(201).json({
+        success: true,
+        data: returnvalue,
+      });
     });
   } catch (error) {
     await Log.create({ type: "SET_INVOICE", table: "INVOICES", status: false, message: error.message, body: JSON.stringify(req.body) });

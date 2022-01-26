@@ -1,5 +1,6 @@
-const toLocalDate = require('../toLocaleDate')
+const toLocalDate = require("../toLocaleDate");
 module.exports = (data, taxesPercent = 10) => {
+  console.log("data",data);
   const invoiceList = JSON.parse(data.invoiceList);
   const invoiceSubtotal = invoiceList.reduce((acc, cur) => acc + cur.price, 0);
   const invoiceTaxes = (invoiceSubtotal / 100) * taxesPercent;
