@@ -2,9 +2,12 @@
 
 ## Tech
 
-- nodeJS | expressJS
-- PostgreSQL
-- Mailgun
+- NodeJS | expressJS
+- Redis | bullMQ | bull-board
+- PostgreSQL | sequelize
+- Nodemailer
+- Swagger
+
 
 ## Installation
 
@@ -14,3 +17,12 @@ cd test_12devs
 npm i
 npm run nodemon
 ```
+
+## Extra
+
+| DESCRIPTION | PORT| ROUTE
+|--|--|--|
+| Postgres admin panel| 8080 | /
+| BullMQ board| 5000 | /queues
+| Swagger API documentation| 5000 | /api-doc
+
