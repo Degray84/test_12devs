@@ -1,17 +1,15 @@
 const express = require("express");
-const path = require("path");
+const fs = require("fs");
 const morgan = require("morgan");
 const connectDB = require("./config/db.js");
 const { initBullMQ } = require("./utils/bullMQ");
+const swaggerUi = require("swagger-ui-express");
 
 // configs
 require("colors");
 require("dotenv").config();
 
-//connection to database
-
 // Routers
-
 const invoices = require("./routers/invoices.js");
 const clients = require("./routers/clients.js");
 const logs = require("./routers/logs.js");
@@ -30,14 +28,19 @@ app.use(
 app.use(morgan("dev"));
 
 // use Routers
-
 app.use("/api/invoices", invoices);
 app.use("/api/clients", clients);
 app.use("/api/logs", logs);
 
+// init BullMQ
 const serverAdapter = initBullMQ();
-app.use("/admin/queues", serverAdapter.getRouter());
+app.use("/queues", serverAdapter.getRouter());
 
+// init Swagger documentation
+const swaggerFile = JSON.parse(fs.readFileSync("./swagger/output.json"));
+app.use("/api-doc", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
+// Errors
 app.use(function (err, req, res, next) {
   res.status(500).send({
     success: false,

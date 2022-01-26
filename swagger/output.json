@@ -1,0 +1,878 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Test API",
+    "description": "This is the test task API for 12devs company",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Clients",
+      "description": "List of clients endpoints"
+    },
+    {
+      "name": "Invoices",
+      "description": "List of invoices endpoints"
+    },
+    {
+      "name": "Logs",
+      "description": "List of logs endpoints"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/api/invoices/": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "description": "Get all invoices",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Array of all invoices",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "$ref": "#/definitions/Invoices"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Invoices"
+        ],
+        "description": "Create new Invoice and send it to client's email",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Invoice data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "roberts8445@gmail.com"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Jessica Roberts"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "+491724655065"
+                },
+                "currency": {
+                  "type": "string",
+                  "example": "USD"
+                },
+                "invoiceList": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "task 4"
+                      },
+                      "price": {
+                        "type": "number",
+                        "example": 500
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "New invoice information",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "$ref": "#/definitions/Invoice"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "data": {
+                  "type": "number",
+                  "example": 0
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/invoices/{id}": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "description": "Get one invoice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Existing invoice ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information about invoice with it's client",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "$ref": "#/definitions/InvoiceWithClient"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Invoice not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "data": {
+                  "type": "number",
+                  "example": 0
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Invoices"
+        ],
+        "description": "Delete invoice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Existing invoice ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invoice is removed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "number",
+                  "example": 0
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Invoice not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "data": {
+                  "type": "number",
+                  "example": 0
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clients/": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "description": "Get all clients",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Array of all clients",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "$ref": "#/definitions/Clients"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "description": "Create new client",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Client data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "locer89553@showbaz.com"
+                },
+                "firstname": {
+                  "type": "string",
+                  "example": "Evgeny"
+                },
+                "lastname": {
+                  "type": "string",
+                  "example": "Petrosian"
+                },
+                "company": {
+                  "type": "string",
+                  "example": "Petrosian scammers"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "New client information",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "$ref": "#/definitions/Client"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clients/{id}": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "description": "Get one client",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Existing client ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information about one client with his invoices",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "$ref": "#/definitions/ClientWithInvoices"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "data": {
+                  "type": "number",
+                  "example": 0
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Clients"
+        ],
+        "description": "Update client",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Existing client ID"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Some client data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "company": {
+                  "type": "string",
+                  "example": "Petrosian scammers"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated client information",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "$ref": "#/definitions/Client"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "data": {
+                  "type": "number",
+                  "example": 0
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Clients"
+        ],
+        "description": "Delete client",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Existing client ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Client is removed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "number",
+                  "example": 0
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "data": {
+                  "type": "number",
+                  "example": 0
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clients/installClients/": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "description": "Create a bunch of clients from clients.json",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Array of new clients",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "$ref": "#/definitions/Clients"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/logs/": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "description": "Get all logs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Array of all logs",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "$ref": "#/definitions/Logs"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Logs"
+        ],
+        "description": "Delete all logs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "number",
+                  "example": 0
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Client": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "email": {
+          "type": "string",
+          "example": "locer89553@showbaz.com"
+        },
+        "firstname": {
+          "type": "string",
+          "example": "Evgeny"
+        },
+        "lastname": {
+          "type": "string",
+          "example": "Petrosian"
+        },
+        "company": {
+          "type": "string",
+          "example": "Petrosian scammers"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-01-25T07:25:29.925Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-01-25T07:25:29.925Z"
+        }
+      }
+    },
+    "ClientWithInvoices": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "email": {
+          "type": "string",
+          "example": "locer89553@showbaz.com"
+        },
+        "firstname": {
+          "type": "string",
+          "example": "Evgeny"
+        },
+        "lastname": {
+          "type": "string",
+          "example": "Petrosian"
+        },
+        "company": {
+          "type": "string",
+          "example": "Petrosian scammers"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-01-25T07:25:29.925Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-01-25T07:25:29.925Z"
+        },
+        "Invoices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Jessica Roberts"
+              },
+              "phone": {
+                "type": "string",
+                "example": "+491724655065"
+              },
+              "currency": {
+                "type": "string",
+                "example": "USD"
+              },
+              "invoiceList": {
+                "type": "string",
+                "example": "[{\"name\":\"task 1\",\"price\":150},{\"name\":\"task 2\",\"price\":200},{\"name\":\"task 3\",\"price\":100},{\"name\":\"task 4\",\"price\":500}]"
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2022-01-25T11:57:03.822Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2022-01-25T11:57:03.822Z"
+              },
+              "ClientId": {
+                "type": "number",
+                "example": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "Clients": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Client"
+      }
+    },
+    "Invoice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "name": {
+          "type": "string",
+          "example": "Jessica Roberts"
+        },
+        "phone": {
+          "type": "string",
+          "example": "+491724655065"
+        },
+        "currency": {
+          "type": "string",
+          "example": "USD"
+        },
+        "invoiceList": {
+          "type": "string",
+          "example": "[{\"name\":\"task 1\",\"price\":150},{\"name\":\"task 2\",\"price\":200},{\"name\":\"task 3\",\"price\":100},{\"name\":\"task 4\",\"price\":500}]"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-01-25T11:57:03.822Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-01-25T11:57:03.822Z"
+        },
+        "ClientId": {
+          "type": "number",
+          "example": 1
+        }
+      }
+    },
+    "InvoiceWithClient": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "name": {
+          "type": "string",
+          "example": "Jessica Roberts"
+        },
+        "phone": {
+          "type": "string",
+          "example": "+491724655065"
+        },
+        "currency": {
+          "type": "string",
+          "example": "USD"
+        },
+        "invoiceList": {
+          "type": "string",
+          "example": "[{\"name\":\"task 1\",\"price\":150},{\"name\":\"task 2\",\"price\":200},{\"name\":\"task 3\",\"price\":100},{\"name\":\"task 4\",\"price\":500}]"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-01-25T11:57:03.822Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-01-25T11:57:03.822Z"
+        },
+        "ClientId": {
+          "type": "number",
+          "example": 1
+        },
+        "Client": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "example": 1
+            },
+            "email": {
+              "type": "string",
+              "example": "locer89555@showbaz.com"
+            },
+            "firstname": {
+              "type": "string",
+              "example": "Jeff"
+            },
+            "lastname": {
+              "type": "string",
+              "example": "Bezos"
+            },
+            "company": {
+              "type": "string",
+              "example": "Amazon"
+            },
+            "createdAt": {
+              "type": "string",
+              "example": "2022-01-25T07:25:29.925Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "example": "2022-01-25T07:25:29.925Z"
+            }
+          }
+        }
+      }
+    },
+    "Invoices": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Invoice"
+      }
+    },
+    "Log": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "type": {
+          "type": "string",
+          "example": "INSTALL_CLIENTS"
+        },
+        "table": {
+          "type": "string",
+          "example": "CLIENTS"
+        },
+        "status": {
+          "type": "boolean",
+          "example": true
+        },
+        "message": {
+          "type": "string",
+          "example": "Clients from JSON isntalled"
+        },
+        "body": {},
+        "createdAt": {
+          "type": "string",
+          "example": "2022-01-25T07:25:29.949Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-01-25T07:25:29.949Z"
+        }
+      }
+    },
+    "Logs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Log"
+      }
+    }
+  }
+}

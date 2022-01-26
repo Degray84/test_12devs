@@ -4,7 +4,8 @@
   "description": "test backend service for 12devs",
   "main": "index.js",
   "scripts": {
-    "nodemon": "nodemon server.js"
+    "nodemon": "nodemon server.js",
+    "gen": "node ./swagger/index.js"
   },
   "repository": {
     "type": "git",

@@ -1,11 +1,10 @@
 const nodemailer = require("nodemailer");
 const toLocalDate = require("./toLocaleDate");
 module.exports = async (pdfBuffer) => {
-  // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     host: "smtp.mailtrap.io",
     port: 2525,
-    secure: false, // true for 465, false for other ports
+    secure: false,
     auth: {
       user: "779f8b6e0b146f",
       pass: "0165a6b66262f2",
